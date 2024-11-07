@@ -1,109 +1,156 @@
 <template>
-  <div class="gantry-panel">
-    <table class="gantry-table">
-      <tr>
-        <th>Axis</th>
-        <th>Set Zero</th>
-        <th>Position (mm)</th>
-        <th colspan='3'>Jogging</th>
-      </tr>
-      <tr>
-        <td>X</td>
-        <td><button class="reset-button">set zero X</button></td>
-        <td><input type="text"></input></td>
-        <td><button class="jog-plus">+</button></td>
-        <td><button class="jog-minus">-</button></td>
-          <td><select class="jog-select">
-          <option value=".1">0.1 mm</option>
-          <option value="1">1 mm</option>
-          <option value="10">10 mm</option>
-          <option value="100">100 mm</option>
-        </select></td>
-      </tr>
-      <tr>
-        <td>Y</td>
-        <td><button class="reset-button">set zero Y</button></td>
-        <td><input type="text"></input></td>
-        <td><button class="jog-plus">+</button></td>
-        <td><button class="jog-minus">-</button></td>
-          <td><select class="jog-select">
-          <option value=".1">0.1 mm</option>
-          <option value="1">1 mm</option>
-          <option value="10">10 mm</option>
-          <option value="100">100 mm</option>
-        </select></td>
-      </tr>
-      <tr>
-        <td>Z</td>
-        <td><button class="reset-button">set zero Z</button></td>
-        <td><input type="text"></input></td>
-        <td><button class="jog-plus">+</button></td>
-        <td><button class="jog-minus">-</button></td>
-          <td><select class="jog-select">
-          <option value=".1">0.1 mm</option>
-          <option value="1">1 mm</option>
-          <option value="10">10 mm</option>
-          <option value="100">100 mm</option>
-        </select></td>
-      </tr>
-
-  </table>
-</div>
+    <div class="gantry-panel">
+        <table class="gantry-table">
+            <tr>
+                <th>Axis</th>
+                <th>Set Zero</th>
+                <th>Position (mm)</th>
+                <th colspan='3'>Jogging</th>
+            </tr>
+            <tr>
+                <td>X</td>
+                <td><button class="reset-button" @click="setZeroX()">set zero X</button></td>
+                <td><input type="text" v-model="xPos"></input></td>
+                <td><button class="jog-plus" @click="xPlus()">+</button></td>
+                <td><button class="jog-minus" @click="xMinus()">-</button></td>
+                <td><select class="jog-select" v-model="xJog">
+                    <option value=".1">0.1 mm</option>
+                    <option value="1">1 mm</option>
+                    <option value="10">10 mm</option>
+                    <option value="100">100 mm</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td>Y</td>
+                <td><button class="reset-button" @click="setZeroY()">set zero Y</button></td>
+                <td><input type="text" v-model="yPos"></input></td>
+                <td><button class="jog-plus" @click="yPlus()">+</button></td>
+                <td><button class="jog-minus" @click="yMinus()">-</button></td>
+                <td><select class="jog-select" v-model="yJog">
+                    <option value=".1">0.1 mm</option>
+                    <option value="1">1 mm</option>
+                    <option value="10">10 mm</option>
+                    <option value="100">100 mm</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td>Z</td>
+                <td><button class="reset-button" @click="setZeroZ()">set zero Z</button></td>
+                <td><input type="text" v-model="zPos"></input></td>
+                <td><button class="jog-plus" @click="zPlus()">+</button></td>
+                <td><button class="jog-minus" @click="zMinus()">-</button></td>
+                <td><select class="jog-select" v-model="zJog">
+                    <option value=".1">0.1 mm</option>
+                    <option value="1">1 mm</option>
+                    <option value="10">10 mm</option>
+                    <option value="100">100 mm</option>
+                </select></td>
+            </tr>
+        </table>
+    </div>
+    <button @click="myfunction()"></button>
 </template>
 
 
 
-<script setup lang="ts">
-import { ref } from 'vue';
+<script setup lang="ts" name="GantryControl">
+    import { ref } from 'vue';
 
-let arrow_size = ref(60);
+    const xPos = ref('')
+    const yPos = ref('')
+    const zPos = ref('')
+    const xJog = ref('')
+    const yJog = ref('')
+    const zJog = ref('')
 
+    function setZeroX() {
+        console.log('zero x')
+    }
+
+    function setZeroY() {
+        console.log('zero y')
+    }
+
+    function setZeroZ() {
+        console.log('zero z')
+    }
+    
+    function xPlus () {
+        console.log('+ x')
+    }
+
+    function yPlus () {
+        console.log('+ y')
+    }
+
+    function zPlus () {
+        console.log('+ z')
+    }
+
+    function xMinus () {
+        console.log('- x')
+    }
+
+    function yMinus () {
+        console.log('- y')
+    }
+
+    function zMinus () {
+        console.log('- z')
+    }
+
+    function myfunction() {
+
+        console.log('xpos', xPos.value)
+        console.log('ypos', yPos.value)
+        console.log('zpos', zPos.value)
+        console.log('xjog', xJog.value)
+        console.log('xjog', yJog.value)
+        console.log('xjog', zJog.value)
+    }
 </script>
 
 <style scoped>
-  .gantry-panel {
-    width: 800px;
-    height: 300px;
-    background-color: rgb(53, 132, 53);
-
-    /* border: 1px solid; */
-    border-radius: 15px;
-    /* vertical-align: middle; */
-  }
+    .gantry-panel {
+        width: 800px;
+        height: 300px;
+        background-color: rgb(53, 132, 53);
+        border-radius: 15px;
+    }
   
-  .gantry-table {
-    margin-top: 10px;
-    margin-left: 10px;
-    width: 100%;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 20px;
-  }
-  .gantry-table th {
-    height: 40px;
-  }
-  .gantry-table td {
-    height: 30px;
-    font-size: 20px;
-  }
-  .gantry-table button {
-    font-size: 20px;
-    height: 35px;
-  }
-  .gantry-table input {
-    height: 35px;
-    box-sizing: border-box;
-  }
+    .gantry-table {
+        margin-top: 10px;
+        margin-left: 10px;
+        width: 100%;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 20px;
+    }
+    .gantry-table th {
+        height: 40px;
+    }
+    .gantry-table td {
+        height: 30px;
+        font-size: 20px;
+    }
+    .gantry-table button {
+        font-size: 20px;
+        height: 35px;
+    }
+    .gantry-table input {
+        height: 35px;
+        box-sizing: border-box;
+    }
 
-  .jog-plus {
-    width: 50px;
-  }
-  .jog-minus {
-    width: 50px;
-  }
-  .jog-select {
-    height: 35px;
-    text-align: center;
-    font-size: 20px;
-  }
+    .jog-plus {
+        width: 50px;
+    }
+    .jog-minus {
+        width: 50px;
+    }
+    .jog-select {
+        height: 35px;
+        text-align: center;
+        font-size: 20px;
+    }
 </style>
