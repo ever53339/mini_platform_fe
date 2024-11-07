@@ -47,12 +47,18 @@
     watch(
       () => router.currentRoute.value, 
       (newRoute, oldRoute) => {
-        // Do something when the route changes
-        // console.log('Route changed:', newRoute.name, oldRoute.name);
         opMode.value = newRoute.path
-        // console.log(opMode.value)
       }
     );
+
+    // prevent navigating to another page when general switch is on
+
+    router.beforeEach ( (to, from) => {
+        if (generalSwitch.value) {
+            alert('Can not go to other pages when the robot is running')
+            return false
+        }
+    })
 
     const status = ref('')
 
