@@ -1,138 +1,186 @@
 <template>
-    <div class="main">
-        <h1>Basic Control</h1>
-        primary: <Vue3StatusIndicator :type="status" :pause="true"/>
-        
-        <br>
-
-        <button @click="runRobot">Start</button>
-        
-        <br>
-        
-        <button @click="stopRobot">Stop</button>
-        
-        <br>
-        Current Status
-        <br>
-        <h1>Multiple Samples</h1>
-        #Samples: <input></input>
-        <br>
-        #Locations on each sample: <input></input>
-        
-        <br>
-        Preview
-        <br>
-        <h1>Sample Scan</h1>
-        Gap in X-scale (mm): <input type="float" v-model="x_gap"></input>
-        <br>
-        Gap in Y-scale (mm): <input type="float" v-model="y_gap"></input>
-        
-        <br>
-        #Points in X-sacle: <input type="integer" v-model="x_points"></input>
-        <br>
-
-        #Points in Y-scale: <input type="integer" v-model="y_points"></input>
-        
-        <br>
-        Grid Preview
+    <div class="header-container">
+        <TopHeader></TopHeader>
     </div>
-</template>
+    <div class="left-right-flex">
+        <div class="navigation-container">
+            <SideMenu></SideMenu>
+        </div>
+        <div class="up-down-flex">
+            <div class="content-container">
+                <RouterView></RouterView>
+            </div>
+            <div class="foot-container">
+                <span class='status-text'>
+                    <el-switch class="switch"
+                        style="--el-switch-on-color: #13ce66"
+                        size="large"
+                        v-model="value1" />&emsp;Robot status: Running
+                </span>
+                
+                <!-- <div class="switch-box"> -->
+                    <!-- <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round">slider</span>
+                    </label> -->
+                <!-- </div> -->
+                <!-- <input type="checkbox"> -->
+                
 
-<!-- <script lang="ts">
-    export default{
-        name: "MainPage"
-    }
-</script> -->
+                <!-- primary: <Vue3StatusIndicator :type="status" :pause="true"/>
+    
+                <el-button type="success" @click="runRobot">Start</el-button>        
+                <el-button type="danger" @click="stopRobot">Stop</el-button> -->
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- <div class="main-page">
+        <el-container>
+            <el-header style="font-size: 36px">
+                <TopHeader/>
+            </el-header>
+            <el-container>
+                <el-aside>
+                    <SideMenu></SideMenu>
+                </el-aside>
+                <el-container>
+                    <el-main>
+                        <RouterView>
+                        </RouterView>
+                    </el-main>
+                    <el-footer>Footer</el-footer>
+                </el-container>
+            </el-container>
+        </el-container>
+    </div> -->
+</template>
 
 <script setup lang="ts" name="MainPage">
     import { ref } from "vue"
     import ROSLIB  from "roslib"
-    import { Vue3StatusIndicator } from 'vue3-status-indicator'
     import 'vue3-status-indicator/dist/style.css'
+    import SideMenu from "./SideMenu.vue"
+    import { Setting } from "@element-plus/icons-vue"
+    import TopHeader from "./TopHeader.vue"
+    import { RouterView, RouterLink } from "vue-router"
+    import { Vue3StatusIndicator } from 'vue3-status-indicator'
 
-    const ros = new ROSLIB.Ros( {
-
-    })
-
-    // If there is an error on the backend, an 'error' emit will be emitted.
-    ros.on('error', function(error: any) {
-        console.log(error);
-    });
-
-    // Find out exactly when we made a connection.
-    ros.on('connection', function() {
-        console.log('Connection made!');
-
-    });
-
-    ros.on('close', function() {
-        console.log('Connection closed.');
-
-    });
-
-    // Create a connection to the rosbridge WebSocket server.
-    ros.connect('ws://localhost:9090');
-
-
-    // create a service for launching files or running nodes
-    const launcher = new ROSLIB.Service({
-        ros : ros,
-        name : '/launch',
-        serviceType : 'customer_interfaces/LaunchRequest'
-    });
-
-    const status = ref('primary')
-    const x_gap = ref('')
-    const y_gap = ref('')
-    const x_points = ref('')
-    const y_points = ref('')
-    
-    function runRobot () {
-        // console.log('new code')
-        const request = {
-            cmd: 'run', 
-            package: 'bt',
-            file_name: 'single_sample_mapping',
-            args: '--ros-args -p x_gap:=' + parseFloat(x_gap.value) + '.0' + ' -p y_gap:=' + parseFloat(y_gap.value) + '.0' + ' -p x_points:=' + parseInt(x_points.value) + ' -p y_points:=' + parseInt(y_points.value)  
-        }
-        
-        launcher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
-                status.value = 'success'
-            } else {
-                status.value = 'primary'
-            }
-        })
-        
-
-    }
-
-    function stopRobot () {
-        const request = {
-            cmd: 'kill', 
-            package: 'bt',
-            file_name: 'single_sample_mapping'  
-        }
-
-        launcher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
-                status.value = 'success'
-            } else {
-                status.value = 'primary'
-            }
-        })
-    }
-
+    const value1 = ref(false)
 </script>
 
-<style>
-    .main {
-        background-color: #f8f9fc;
-        box-shadow: 0 0 10px;
-        border-radius: 10px;
-        padding: 20px;
+<style scoped>
+    .header-container {
+        height: 150px;
+        background-color: skyblue;
+    }
+    .left-right-flex {
+        display: flex;
+    }
+    .navigation-container {
+        width: 260px;
+        background-color: gray;
+    }
+    .up-down-flex {
+        /* width: 100%; */
+        flex-direction: column;
+        display: flex;
+    }
+    .content-container {
+        width: calc(100vw - 260px);
+        height: calc(100vh - 100px - 150px);
+        background-color: rgb(125, 85, 85);
+
+        padding: 40px 40px;
+        box-sizing: border-box;
+
+        display: flex;
+        justify-content: space-around;
+    }
+    .foot-container {
+        height: 100px;
+        background-color: skyblue;
+        text-align: right;
+        line-height: 100px;
+        font-size: 0;
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .status-text {
+        font-size: 20px;
+        vertical-align: middle;
+        margin-right: 2em
+    }
+
+    .switch {
+        vertical-align: middle;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        vertical-align: middle;
+    }
+
+    /* The slider */
+    .slider {
+        /* position: absolute; */
+        cursor: pointer;
+        /* top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0; */
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+        vertical-align: middle;
+        font-size: 20px;
+    }
+
+    .slider:before {
+        position: absolute;
+        /* position: static; */
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        vertical-align: middle;
+    }
+
+    input:checked + .slider {
+        background-color: rgb(0, 200, 0);
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px rgb(0,200,0);
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    .switch-box {
+        vertical-align: center;
+        
     }
 
 </style>
