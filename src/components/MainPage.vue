@@ -7,6 +7,12 @@
             <SideMenu></SideMenu>
         </div>
         <div class="up-down-flex">
+            <!-- <span>{{ configStore.mappingConfig.x_gap }}</span>
+            <span>{{ configStore.mappingConfig.y_gap }}</span>
+            <span>{{ configStore.mappingConfig.x_points }}</span>
+            <span>{{ configStore.mappingConfig.y_points }}</span>
+            <span>{{ configStore.multipleSampleConfig.num_samples }}</span>
+            <span>{{ configStore.multipleSampleConfig.sample_locations }}</span> -->
             <div class="content-container">
                 <RouterView></RouterView>
             </div>
@@ -15,59 +21,118 @@
                     <el-switch class="switch"
                         style="--el-switch-on-color: #13ce66"
                         size="large"
-                        v-model="value1" />&emsp;Robot status: Running
+                        v-model="generalSwitch" />&emsp;Robot status: Running
                 </span>
-                
-                <!-- <div class="switch-box"> -->
-                    <!-- <label class="switch">
-                        <input type="checkbox">
-                        <span class="slider round">slider</span>
-                    </label> -->
-                <!-- </div> -->
-                <!-- <input type="checkbox"> -->
-                
-
-                <!-- primary: <Vue3StatusIndicator :type="status" :pause="true"/>
-    
-                <el-button type="success" @click="runRobot">Start</el-button>        
-                <el-button type="danger" @click="stopRobot">Stop</el-button> -->
             </div>
         </div>
     </div>
-    
-    
-    <!-- <div class="main-page">
-        <el-container>
-            <el-header style="font-size: 36px">
-                <TopHeader/>
-            </el-header>
-            <el-container>
-                <el-aside>
-                    <SideMenu></SideMenu>
-                </el-aside>
-                <el-container>
-                    <el-main>
-                        <RouterView>
-                        </RouterView>
-                    </el-main>
-                    <el-footer>Footer</el-footer>
-                </el-container>
-            </el-container>
-        </el-container>
-    </div> -->
 </template>
 
 <script setup lang="ts" name="MainPage">
-    import { ref } from "vue"
+    import { reactive, ref, watch } from "vue"
     import ROSLIB  from "roslib"
-    import 'vue3-status-indicator/dist/style.css'
     import SideMenu from "./SideMenu.vue"
-    import { Setting } from "@element-plus/icons-vue"
     import TopHeader from "./TopHeader.vue"
-    import { RouterView, RouterLink } from "vue-router"
-    import { Vue3StatusIndicator } from 'vue3-status-indicator'
+    import { RouterView, RouterLink, onBeforeRouteUpdate, useRouter} from "vue-router"
+    import { useRosStore } from '@/store/ros'
+    import { useConfigStore } from "@/store/config"
+    // import Password from "primevue/password"
 
-    const value1 = ref(false)
+    const generalSwitch = ref(false)
+    
+    // deal with different routes to determine current operation mode
+    const opMode = ref('')
+    const router = useRouter()
+
+    watch(
+      () => router.currentRoute.value, 
+      (newRoute, oldRoute) => {
+        // Do something when the route changes
+        // console.log('Route changed:', newRoute.name, oldRoute.name);
+        opMode.value = newRoute.path
+        // console.log(opMode.value)
+      }
+    );
+
+    const status = ref('')
+
+    const rosStore = useRosStore()
+    const configStore = useConfigStore()
+    
+    const launcher = new ROSLIB.Service({
+        ros : rosStore.ros,
+        name : '/launch',
+        serviceType : 'customer_interfaces/LaunchRequest'
+    });
+
+    const request = {
+                    cmd: '', 
+                    package: '',
+                    file_name: '',
+                    args: ''
+                    }
+
+    function runRobot () {
+        if (opMode.value == '/gantryControl') {
+            console.log('in gantrycontrol model')
+        } else {
+            if (opMode.value == '/mappingOp') {
+                request.cmd = 'run'
+                request.package = 'bt'
+                request.file_name = 'single_sample_mapping'
+                request.args = '--ros-args -p x_gap:=' + parseFloat(configStore.mappingConfig.x_gap) + '.0' + ' -p y_gap:=' + parseFloat(configStore.mappingConfig.y_gap) + '.0' + ' -p x_points:=' + parseInt(configStore.mappingConfig.x_points) + ' -p y_points:=' + parseInt(configStore.mappingConfig.y_points)
+            } else {
+                request.cmd = 'run'
+                request.package = 'bt'
+                request.file_name = 'multipleSamples'
+                request.args = '--ros-args -p'
+            }
+            
+            console.log('start robot', request)
+            // launcher.callService(request, function(response) {
+            //     console.log(response.message)
+            //     if (response.is_launched){
+            //         status.value = 'success'
+            //     } else {
+            //         status.value = 'primary'
+            //     }
+            // })
+        }
+    }
+
+    function stopRobot () {
+        if (opMode.value == '/mappingOp') {
+            request.cmd = 'kill'
+            request.package = 'bt'
+            request.file_name = 'single_sample_mapping'
+            request.args = ''
+        } else if (opMode.value == '/multipleSamples') {
+            request.cmd = 'kill'
+            request.package = 'bt'
+            request.file_name = 'multipleSamples'
+            request.args = ''
+        }
+        console.log('stop robot', request)
+        // launcher.callService(request, function(response) {
+        //     console.log(response.message)
+        //     if (response.is_launched){
+        //         status.value = 'success'
+        //     } else {
+        //         status.value = 'primary'
+        //     }
+        // })
+    }
+
+    watch( generalSwitch, (newValue) => {
+        console.log('switch watcher', newValue)
+        if (newValue) {
+            runRobot()
+        } else {
+            stopRobot()
+        }
+    })
+
+
 </script>
 
 <style scoped>
@@ -113,74 +178,4 @@
         vertical-align: middle;
         margin-right: 2em
     }
-
-    .switch {
-        vertical-align: middle;
-    }
-
-    /* Hide default HTML checkbox */
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-        vertical-align: middle;
-    }
-
-    /* The slider */
-    .slider {
-        /* position: absolute; */
-        cursor: pointer;
-        /* top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0; */
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-        vertical-align: middle;
-        font-size: 20px;
-    }
-
-    .slider:before {
-        position: absolute;
-        /* position: static; */
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-        vertical-align: middle;
-    }
-
-    input:checked + .slider {
-        background-color: rgb(0, 200, 0);
-    }
-
-    input:focus + .slider {
-        box-shadow: 0 0 1px rgb(0,200,0);
-    }
-
-    input:checked + .slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
-    }
-
-    .slider.round:before {
-        border-radius: 50%;
-    }
-
-    .switch-box {
-        vertical-align: center;
-        
-    }
-
 </style>

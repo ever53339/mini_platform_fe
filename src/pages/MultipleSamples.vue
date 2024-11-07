@@ -8,11 +8,11 @@
             </tr>
             <tr>
                 <td>#Samples</td>
-                <td><input type="float" v-model="num_samples"></input></td>
+                <td><input type="float" v-model="configStore.multipleSampleConfig.num_samples"></input></td>
             </tr>
             <tr>
                 <td>Sample Locations</td>
-                <td><input type="float" v-model="sample_locations"></input></td>
+                <td><input type="float" v-model="configStore.multipleSampleConfig.sample_locations"></input></td>
             </tr>
         </table>
     </div>
@@ -22,10 +22,9 @@
     </div>
 </template>
 
-<script lang="ts">
-    export default{
-        name: "MultipleSamples"
-    }
+<script setup lang="ts" name="MultipleSamples">
+    import { useConfigStore } from '@/store/config';
+    const configStore = useConfigStore()
 </script>
 
 <style>

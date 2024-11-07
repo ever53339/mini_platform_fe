@@ -17,7 +17,7 @@
               <RouterLink class="class2-menu router-link"
               replace 
               :to="{
-                name: 'mappingOp'
+                name: 'mappingOp',
               }"
               active-class="">Mapping</RouterLink>
             </el-menu-item>
@@ -40,29 +40,14 @@
   </template>
   
 <script lang="ts" setup>
-  import {
-    Document,
-    Menu as IconMenu,
-    Location,
-    Setting,  
-  } from '@element-plus/icons-vue'
-  import ROSLIB from 'roslib';
-  import { toRefs } from 'vue';
   import { RouterLink } from 'vue-router'
   
-  // const props = defineProps(['ros', 'b'])
-  // // console.log('***', props)
-
-  // let ros = props.ros
-  // console.log('***', ros)
-  
   const handleOpen = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
+    // console.log(key, keyPath)
   }
   const handleClose = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
+    // console.log(key, keyPath)
   }
-
 </script>
 
 <style scoped>
