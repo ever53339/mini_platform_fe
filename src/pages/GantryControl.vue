@@ -1,7 +1,7 @@
 <template>
     <div class="gantry-panel">
         <table class="gantry-table">
-            <thead>
+                <thead>
                 <tr>
                     <th>Axis</th>
                     <th>Set Zero</th>
@@ -13,10 +13,10 @@
                 <tr>
                     <td>X</td>
                     <td><button class="reset-button" @click="setZeroX()">set zero X</button></td>
-                    <td><input type="text" v-model="xPos"></input></td>
+                    <td><input type="text" v-model="pos.x" @change="xGoto"></input></td>
                     <td><button class="jog-plus" @click="xPlus()">+</button></td>
                     <td><button class="jog-minus" @click="xMinus()">-</button></td>
-                    <td><select class="jog-select" v-model="xJog">
+                    <td><select class="jog-select" v-model="jog.x">
                         <option value=".1">0.1 mm</option>
                         <option value="1">1 mm</option>
                         <option value="10">10 mm</option>
@@ -26,10 +26,10 @@
                 <tr>
                     <td>Y</td>
                     <td><button class="reset-button" @click="setZeroY()">set zero Y</button></td>
-                    <td><input type="text" v-model="yPos"></input></td>
+                    <td><input type="text" v-model="pos.y" @change="yGoto"></input></td>
                     <td><button class="jog-plus" @click="yPlus()">+</button></td>
                     <td><button class="jog-minus" @click="yMinus()">-</button></td>
-                    <td><select class="jog-select" v-model="yJog">
+                    <td><select class="jog-select" v-model="jog.y">
                         <option value=".1">0.1 mm</option>
                         <option value="1">1 mm</option>
                         <option value="10">10 mm</option>
@@ -39,10 +39,10 @@
                 <tr>
                     <td>Z</td>
                     <td><button class="reset-button" @click="setZeroZ()">set zero Z</button></td>
-                    <td><input type="text" v-model="zPos"></input></td>
+                    <td><input type="text" v-model="pos.z" @change="zGoto"></input></td>
                     <td><button class="jog-plus" @click="zPlus()">+</button></td>
                     <td><button class="jog-minus" @click="zMinus()">-</button></td>
-                    <td><select class="jog-select" v-model="zJog">
+                    <td><select class="jog-select" v-model="jog.z">
                         <option value=".1">0.1 mm</option>
                         <option value="1">1 mm</option>
                         <option value="10">10 mm</option>
@@ -60,47 +60,100 @@
 <script setup lang="ts" name="GantryControl">
     import { useRosStore } from '@/store/ros';
     import ROSLIB from 'roslib';
-    import { ref } from 'vue';
+    import { reactive, ref } from 'vue';
 
-    const xPos = ref('');
-    const yPos = ref('');
-    const zPos = ref('');
-    const yJog = ref('');
-    const zJog = ref('');
-    const xJog = ref('');
+    const goto = reactive({
+        x: '',
+        y: '',
+        z: ''
+    });
+    const jog = reactive({
+        x: '',
+        y: '',
+        z: ''
+    });
+    // todo: implement jogging function
+    // todo: implement listener on gantry pub
+    // todo: implement set zero
+
+    const pos = reactive({
+        x: '',
+        y: '',
+        z: ''
+    })
+
 
     const rosStore = useRosStore();
+    const request = {
+        cmd: 'cli',
+        package: 'ros2 action send_goal',
+        file_name: '/move_gantry custom_interfaces/action/MoveGantry',
+        args: '"{cmd: G00 X10}"'
+    };
 
-    
 
 
     function setZeroX() {
-        // this is only a demo for sending goals to move gantry
-        const request = {
-            cmd: 'cli',
-            package: 'ros2 action send_goal',
-            file_name: '/move_gantry custom_interfaces/action/MoveGantry',
-            args: '"{cmd: G00 X10}"'
-        };
         
-        rosStore.rosLauncher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
-                
-            } else {
-                
-            }
-        });
     }
 
     function setZeroY() {
+        pos.x += 1;
         console.log('zero y')
     }
 
     function setZeroZ() {
         console.log('zero z')
     }
+    // todo: set x, y, z goto value to previous value if new value is invalid
+    // possiblely use focus event to store the old value
+    function xGoto(event: Event) {
+        const et = event.target as HTMLInputElement
+        if (et.value) { 
+            request.args = `"{cmd: G00 X${et.value}}"`
+            console.log(request.args)
+            rosStore.rosLauncher.callService(request, function(response) {
+                console.log(response.message)
+                if (response.is_launched){
+                    
+                } else {
+                    
+                }
+            })
+        }
+    }
     
+    function yGoto(event: Event) {
+        const et = event.target as HTMLInputElement
+        if (et.value) { 
+            request.args = `"{cmd: G00 Y${et.value}}"`
+            console.log(request.args)
+            rosStore.rosLauncher.callService(request, function(response) {
+                console.log(response.message)
+                if (response.is_launched){
+                    
+                } else {
+                    
+                }
+            })
+        }
+    }
+
+    function zGoto(event: Event) {
+        const et = event.target as HTMLInputElement
+        if (et.value) { 
+            request.args = `"{cmd: G00 Y${et.value}}"`
+            console.log(request.args)
+            rosStore.rosLauncher.callService(request, function(response) {
+                console.log(response.message)
+                if (response.is_launched){
+                    
+                } else {
+                    
+                }
+            })
+        }
+    }
     function xPlus () {
         console.log('+ x')
     }
@@ -123,16 +176,6 @@
 
     function zMinus () {
         console.log('- z')
-    }
-
-    function myfunction() {
-
-        console.log('xpos', xPos.value)
-        console.log('ypos', yPos.value)
-        console.log('zpos', zPos.value)
-        console.log('xjog', xJog.value)
-        console.log('xjog', yJog.value)
-        console.log('xjog', zJog.value)
     }
 </script>
 
