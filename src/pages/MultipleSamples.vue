@@ -2,18 +2,22 @@
     <div class="config panel">
         <h2>Configuration</h2>
         <table>
-            <tr>
-                <th>Parameter</th>
-                <th>Value</th>
-            </tr>
-            <tr>
-                <td>#Samples</td>
-                <td><input type="float" v-model="configStore.multipleSampleConfig.num_samples"></input></td>
-            </tr>
-            <tr>
-                <td>Sample Locations</td>
-                <td><input type="float" v-model="configStore.multipleSampleConfig.sample_locations"></input></td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#Samples</td>
+                    <td><input type="float" v-model="configStore.multipleSampleConfig.num_samples"></input></td>
+                </tr>
+                <tr>
+                    <td>Sample Locations</td>
+                    <td><input type="float" v-model="configStore.multipleSampleConfig.sample_locations"></input></td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <div class="preview panel">
