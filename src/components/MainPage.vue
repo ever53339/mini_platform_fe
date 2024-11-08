@@ -64,19 +64,13 @@
 
     const rosStore = useRosStore()
     const configStore = useConfigStore()
-    
-    const launcher = new ROSLIB.Service({
-        ros : rosStore.ros,
-        name : '/launch',
-        serviceType : 'customer_interfaces/LaunchRequest'
-    });
 
     const request = {
                     cmd: '', 
                     package: '',
                     file_name: '',
                     args: ''
-                    }
+                };
 
     function runRobot () {
         if (opMode.value == '/gantryControl') {
@@ -95,14 +89,14 @@
             }
             
             console.log('start robot', request)
-            // launcher.callService(request, function(response) {
-            //     console.log(response.message)
-            //     if (response.is_launched){
-            //         status.value = 'success'
-            //     } else {
-            //         status.value = 'primary'
-            //     }
-            // })
+            rosStore.rosLauncher.callService(request, function(response) {
+                console.log(response.message)
+                if (response.is_launched){
+                    status.value = 'success'
+                } else {
+                    status.value = 'primary'
+                }
+            })
         }
     }
 
@@ -119,14 +113,14 @@
             request.args = ''
         }
         console.log('stop robot', request)
-        // launcher.callService(request, function(response) {
-        //     console.log(response.message)
-        //     if (response.is_launched){
-        //         status.value = 'success'
-        //     } else {
-        //         status.value = 'primary'
-        //     }
-        // })
+        rosStore.rosLauncher.callService(request, function(response) {
+            console.log(response.message)
+            if (response.is_launched){
+                status.value = 'success'
+            } else {
+                status.value = 'primary'
+            }
+        })
     }
 
     watch( generalSwitch, (newValue) => {

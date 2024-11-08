@@ -22,10 +22,17 @@ ros.on('close', function() {
 // Create a connection to the rosbridge WebSocket server.
 ros.connect('ws://localhost:9090');
 
+const launcher = new ROSLIB.Service({
+    ros : ros,
+    name : '/launch',
+    serviceType : 'customer_interfaces/LaunchRequest'
+});
+
 export const  useRosStore = defineStore('ros', {
     state() {
         return {
-            ros: ros
+            ros: ros,
+            rosLauncher: launcher
         }
     } 
 })
