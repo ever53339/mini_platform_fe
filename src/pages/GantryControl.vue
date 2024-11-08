@@ -1,70 +1,96 @@
 <template>
     <div class="gantry-panel">
         <table class="gantry-table">
-            <tr>
-                <th>Axis</th>
-                <th>Set Zero</th>
-                <th>Position (mm)</th>
-                <th colspan='3'>Jogging</th>
-            </tr>
-            <tr>
-                <td>X</td>
-                <td><button class="reset-button" @click="setZeroX()">set zero X</button></td>
-                <td><input type="text" v-model="xPos"></input></td>
-                <td><button class="jog-plus" @click="xPlus()">+</button></td>
-                <td><button class="jog-minus" @click="xMinus()">-</button></td>
-                <td><select class="jog-select" v-model="xJog">
-                    <option value=".1">0.1 mm</option>
-                    <option value="1">1 mm</option>
-                    <option value="10">10 mm</option>
-                    <option value="100">100 mm</option>
-                </select></td>
-            </tr>
-            <tr>
-                <td>Y</td>
-                <td><button class="reset-button" @click="setZeroY()">set zero Y</button></td>
-                <td><input type="text" v-model="yPos"></input></td>
-                <td><button class="jog-plus" @click="yPlus()">+</button></td>
-                <td><button class="jog-minus" @click="yMinus()">-</button></td>
-                <td><select class="jog-select" v-model="yJog">
-                    <option value=".1">0.1 mm</option>
-                    <option value="1">1 mm</option>
-                    <option value="10">10 mm</option>
-                    <option value="100">100 mm</option>
-                </select></td>
-            </tr>
-            <tr>
-                <td>Z</td>
-                <td><button class="reset-button" @click="setZeroZ()">set zero Z</button></td>
-                <td><input type="text" v-model="zPos"></input></td>
-                <td><button class="jog-plus" @click="zPlus()">+</button></td>
-                <td><button class="jog-minus" @click="zMinus()">-</button></td>
-                <td><select class="jog-select" v-model="zJog">
-                    <option value=".1">0.1 mm</option>
-                    <option value="1">1 mm</option>
-                    <option value="10">10 mm</option>
-                    <option value="100">100 mm</option>
-                </select></td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Axis</th>
+                    <th>Set Zero</th>
+                    <th>Position (mm)</th>
+                    <th colspan='3'>Jogging</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>X</td>
+                    <td><button class="reset-button" @click="setZeroX()">set zero X</button></td>
+                    <td><input type="text" v-model="xPos"></input></td>
+                    <td><button class="jog-plus" @click="xPlus()">+</button></td>
+                    <td><button class="jog-minus" @click="xMinus()">-</button></td>
+                    <td><select class="jog-select" v-model="xJog">
+                        <option value=".1">0.1 mm</option>
+                        <option value="1">1 mm</option>
+                        <option value="10">10 mm</option>
+                        <option value="100">100 mm</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Y</td>
+                    <td><button class="reset-button" @click="setZeroY()">set zero Y</button></td>
+                    <td><input type="text" v-model="yPos"></input></td>
+                    <td><button class="jog-plus" @click="yPlus()">+</button></td>
+                    <td><button class="jog-minus" @click="yMinus()">-</button></td>
+                    <td><select class="jog-select" v-model="yJog">
+                        <option value=".1">0.1 mm</option>
+                        <option value="1">1 mm</option>
+                        <option value="10">10 mm</option>
+                        <option value="100">100 mm</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Z</td>
+                    <td><button class="reset-button" @click="setZeroZ()">set zero Z</button></td>
+                    <td><input type="text" v-model="zPos"></input></td>
+                    <td><button class="jog-plus" @click="zPlus()">+</button></td>
+                    <td><button class="jog-minus" @click="zMinus()">-</button></td>
+                    <td><select class="jog-select" v-model="zJog">
+                        <option value=".1">0.1 mm</option>
+                        <option value="1">1 mm</option>
+                        <option value="10">10 mm</option>
+                        <option value="100">100 mm</option>
+                    </select></td>
+                </tr>
+            </tbody>
         </table>
     </div>
-    <button @click="myfunction()"></button>
+    <!-- <button @click="myfunction()"></button> -->
 </template>
 
 
 
 <script setup lang="ts" name="GantryControl">
+    import { useRosStore } from '@/store/ros';
+    import ROSLIB from 'roslib';
     import { ref } from 'vue';
 
-    const xPos = ref('')
-    const yPos = ref('')
-    const zPos = ref('')
-    const xJog = ref('')
-    const yJog = ref('')
-    const zJog = ref('')
+    const xPos = ref('');
+    const yPos = ref('');
+    const zPos = ref('');
+    const yJog = ref('');
+    const zJog = ref('');
+    const xJog = ref('');
+
+    const rosStore = useRosStore();
+
+    
+
 
     function setZeroX() {
-        console.log('zero x')
+        // this is only a demo for sending goals to move gantry
+        const request = {
+            cmd: 'cli',
+            package: 'ros2 action send_goal',
+            file_name: '/move_gantry custom_interfaces/action/MoveGantry',
+            args: '"{cmd: G00 X10}"'
+        };
+        
+        rosStore.rosLauncher.callService(request, function(response) {
+            console.log(response.message)
+            if (response.is_launched){
+                
+            } else {
+                
+            }
+        });
     }
 
     function setZeroY() {
@@ -114,7 +140,7 @@
     .gantry-panel {
         width: 800px;
         height: 300px;
-        background-color: rgb(53, 132, 53);
+        background-color: rgb(0, 150, 255);
         border-radius: 15px;
     }
   

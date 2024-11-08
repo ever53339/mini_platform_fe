@@ -1,7 +1,6 @@
 <template>
     <div class='header'>
         <div class="header-container">
-        <!-- <el-icon><Setting /></el-icon> -->
             <h1 class="header-text">
                 <img src="/lml.png" alt="Living Minerals Lab logo">Intellegent Mineral Sample Characterization Platform
             </h1>
