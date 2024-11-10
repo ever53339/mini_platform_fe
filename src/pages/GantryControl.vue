@@ -72,7 +72,6 @@
         y: '',
         z: ''
     });
-    // todo: implement jogging function
     // todo: implement listener on gantry pub
     // todo: implement set zero
 
@@ -155,27 +154,81 @@
         }
     }
     function xPlus () {
-        console.log('+ x')
+        request.args = `"{cmd: G00 X${parseFloat(pos.x) + parseFloat(jog.x)}}"`
+        console.log(request.args)
+        rosStore.rosLauncher.callService(request, function(response) {
+            console.log(response.message)
+            if (response.is_launched){
+                
+            } else {
+                
+            }
+        })
     }
 
     function yPlus () {
-        console.log('+ y')
+        request.args = `"{cmd: G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}}"`
+        console.log(request.args)
+        rosStore.rosLauncher.callService(request, function(response) {
+            console.log(response.message)
+            if (response.is_launched){
+                
+            } else {
+                
+            }
+        })
     }
 
     function zPlus () {
-        console.log('+ z')
+        request.args = `"{cmd: G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}}"`
+        console.log(request.args)
+        rosStore.rosLauncher.callService(request, function(response) {
+            console.log(response.message)
+            if (response.is_launched){
+                
+            } else {
+                
+            }
+        })
     }
 
     function xMinus () {
-        console.log('- x')
+        request.args = `"{cmd: G00 X${parseFloat(pos.x) - parseFloat(jog.x)}}"`
+        console.log(request.args)
+        rosStore.rosLauncher.callService(request, function(response) {
+            console.log(response.message)
+            if (response.is_launched){
+                
+            } else {
+                
+            }
+        })
     }
 
     function yMinus () {
-        console.log('- y')
+        request.args = `"{cmd: G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}}"`
+        console.log(request.args)
+        rosStore.rosLauncher.callService(request, function(response) {
+            console.log(response.message)
+            if (response.is_launched){
+                
+            } else {
+                
+            }
+        })
     }
 
     function zMinus () {
-        console.log('- z')
+        request.args = `"{cmd: G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}}"`
+        console.log(request.args)
+        rosStore.rosLauncher.callService(request, function(response) {
+            console.log(response.message)
+            if (response.is_launched){
+                
+            } else {
+                
+            }
+        })
     }
 </script>
 
