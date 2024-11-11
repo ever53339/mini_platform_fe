@@ -61,6 +61,7 @@
     import { useRosStore } from '@/store/ros';
     import { reactive, ref, watch } from 'vue';
     import { useFocus } from '@vueuse/core';
+import { affixEmits } from 'element-plus';
 
     const goto = reactive({
         x: '',
@@ -72,8 +73,6 @@
         y: '',
         z: ''
     });
-  
-    // todo: implement set zero
 
     const pos = reactive({
         x: '',
@@ -89,6 +88,7 @@
     const { focused: zInputFocused } = useFocus(zInput)
 
     const rosStore = useRosStore();
+    
     const request = {
         cmd: 'cli',
         package: 'ros2 action send_goal',
@@ -96,9 +96,11 @@
         args: '"{cmd: G00 X10}"'
     };
 
+    const setZeroRequest = {
+        axis: ''
+    }
+
     rosStore.gantry_listener.subscribe(function(message : {work: string, x: Number, y: Number, z: Number}) {
-        // console.log('Received message on ' + rosStore.gantry_listener.name + ': ' + message.z);
-        // if (useFocus(xInput).focused.value) {
         if (!xInputFocused.value) {
             pos.x = message.x.toString()
         }
@@ -111,16 +113,24 @@
     });
 
     function setZeroX() {
-        
+        setZeroRequest.axis = 'x'
+        rosStore.zeroSetter.callService(setZeroRequest, function(response) {
+
+        })
     }
 
     function setZeroY() {
-        pos.x += 1;
-        console.log('zero y')
+        setZeroRequest.axis = 'y'
+        rosStore.zeroSetter.callService(setZeroRequest, function(response) {
+
+        })
     }
 
     function setZeroZ() {
-        console.log('zero z')
+        setZeroRequest.axis = 'z'
+        rosStore.zeroSetter.callService(setZeroRequest, function(response) {
+
+        })
     }
     // todo: set x, y, z goto value to previous value if new value is invalid
     // possiblely use focus event to store the old value

@@ -29,6 +29,13 @@ const launcher = new ROSLIB.Service({
     serviceType : 'customer_interfaces/LaunchRequest'
 });
 
+const zeroSetter = new ROSLIB.Service({
+    ros : ros,
+    name : '/set_zero',
+    serviceType : 'customer_interfaces/SetZero'
+});
+
+
 const gantry_listener = new ROSLIB.Topic({
     ros : ros,
     name : '/gantry_status',
@@ -42,7 +49,8 @@ export const  useRosStore = defineStore('ros', {
         return {
             ros: ros,
             rosLauncher: launcher,
-            gantry_listener: gantry_listener
+            gantry_listener: gantry_listener,
+            zeroSetter: zeroSetter
         }
     } 
 })
