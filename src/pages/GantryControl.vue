@@ -169,7 +169,7 @@ import { affixEmits } from 'element-plus';
     function zGoto(event: Event) {
         const et = event.target as HTMLInputElement
         if (et.value) { 
-            request.args = `"{cmd: G00 Y${et.value}}"`
+            request.args = `"{cmd: G00 Z${et.value}}"`
             console.log(request.args)
             rosStore.rosLauncher.callService(request, function(response) {
                 console.log(response.message)
