@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import ROSLIB from "roslib";
+import type { NumberLiteralType } from "typescript";
 
 const ros = new ROSLIB.Ros( {
 
@@ -28,11 +29,20 @@ const launcher = new ROSLIB.Service({
     serviceType : 'customer_interfaces/LaunchRequest'
 });
 
+const gantry_listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/gantry_status',
+    messageType : 'custom_interfaces/msg/GantryStatus'
+  });
+
+
+
 export const  useRosStore = defineStore('ros', {
     state() {
         return {
             ros: ros,
-            rosLauncher: launcher
+            rosLauncher: launcher,
+            gantry_listener: gantry_listener
         }
     } 
 })
