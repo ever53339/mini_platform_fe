@@ -13,7 +13,7 @@
                 <tr>
                     <td>X</td>
                     <td><button class="reset-button" @click="setZeroX()">set zero X</button></td>
-                    <td><input type="text" v-model="pos.x" @change="xGoto"></input></td>
+                    <td><input ref="xInput" type="text" v-model="pos.x" @change="xGoto"></input></td>
                     <td><button class="jog-plus" @click="xPlus()">+</button></td>
                     <td><button class="jog-minus" @click="xMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.x">
@@ -26,7 +26,7 @@
                 <tr>
                     <td>Y</td>
                     <td><button class="reset-button" @click="setZeroY()">set zero Y</button></td>
-                    <td><input type="text" v-model="pos.y" @change="yGoto"></input></td>
+                    <td><input ref="yInput" type="text" v-model="pos.y" @change="yGoto"></input></td>
                     <td><button class="jog-plus" @click="yPlus()">+</button></td>
                     <td><button class="jog-minus" @click="yMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.y">
@@ -39,7 +39,7 @@
                 <tr>
                     <td>Z</td>
                     <td><button class="reset-button" @click="setZeroZ()">set zero Z</button></td>
-                    <td><input type="text" v-model="pos.z" @change="zGoto"></input></td>
+                    <td><input ref="zInput" type="text" v-model="pos.z" @change="zGoto"></input></td>
                     <td><button class="jog-plus" @click="zPlus()">+</button></td>
                     <td><button class="jog-minus" @click="zMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.z">
@@ -59,8 +59,8 @@
 
 <script setup lang="ts" name="GantryControl">
     import { useRosStore } from '@/store/ros';
-    import ROSLIB from 'roslib';
-    import { reactive, ref } from 'vue';
+    import { reactive, ref, watch } from 'vue';
+    import { useFocus } from '@vueuse/core';
 
     const goto = reactive({
         x: '',
@@ -72,7 +72,7 @@
         y: '',
         z: ''
     });
-    // todo: implement listener on gantry pub
+  
     // todo: implement set zero
 
     const pos = reactive({
@@ -81,6 +81,12 @@
         z: ''
     })
 
+    const xInput = ref(null)
+    const yInput = ref(null)
+    const zInput = ref(null)
+    const { focused: xInputFocused } = useFocus(xInput)
+    const { focused: yInputFocused } = useFocus(yInput)
+    const { focused: zInputFocused } = useFocus(zInput)
 
     const rosStore = useRosStore();
     const request = {
@@ -90,7 +96,19 @@
         args: '"{cmd: G00 X10}"'
     };
 
-
+    rosStore.gantry_listener.subscribe(function(message : {work: string, x: Number, y: Number, z: Number}) {
+        // console.log('Received message on ' + rosStore.gantry_listener.name + ': ' + message.z);
+        // if (useFocus(xInput).focused.value) {
+        if (!xInputFocused.value) {
+            pos.x = message.x.toString()
+        }
+        if (!yInputFocused.value) {
+            pos.y = message.y.toString()
+        }
+        if (!zInputFocused.value) {
+            pos.z = message.z.toString()
+        } 
+    });
 
     function setZeroX() {
         
