@@ -18,6 +18,8 @@
     "pinia": "^2.2.5",
     "primevue": "^4.1.0",
     "roslib": "^1.4.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "vue": "^3.4.29",
     "vue-router": "^4.4.5",
     "vue3-status-indicator": "^1.1.1"

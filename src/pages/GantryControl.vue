@@ -61,7 +61,17 @@
     import { useRosStore } from '@/store/ros';
     import { reactive, ref, watch } from 'vue';
     import { useFocus } from '@vueuse/core';
-import { affixEmits } from 'element-plus';
+    import { io } from "socket.io-client";
+
+    const socket = io('http://localhost:3000', {transports: ['websocket']})
+
+    socket.on("connect", () => {
+        console.log('socket io connected to gantry')
+    });
+
+    socket.on("disconnect", () => {
+        console.log('socket io disconnected from gantry')
+    });
 
     const goto = reactive({
         x: '',
@@ -113,24 +123,36 @@ import { affixEmits } from 'element-plus';
     });
 
     function setZeroX() {
-        setZeroRequest.axis = 'x'
-        rosStore.zeroSetter.callService(setZeroRequest, function(response) {
+        // talk to openbuilds control socket io server directly
+        socket.emit("setZero", 'x');
+        
+        // below is the implemented using rosbridge
+        // setZeroRequest.axis = 'x'
+        // rosStore.zeroSetter.callService(setZeroRequest, function(response) {
 
-        })
+        // })
     }
 
     function setZeroY() {
-        setZeroRequest.axis = 'y'
-        rosStore.zeroSetter.callService(setZeroRequest, function(response) {
+        // talk to openbuilds control socket io server directly
+        socket.emit("setZero", 'y');
+        
+        // below is the implemented using rosbridge
+        // setZeroRequest.axis = 'y'
+        // rosStore.zeroSetter.callService(setZeroRequest, function(response) {
 
-        })
+        // })
     }
 
     function setZeroZ() {
-        setZeroRequest.axis = 'z'
-        rosStore.zeroSetter.callService(setZeroRequest, function(response) {
+        // talk to openbuilds control socket io server directly
+        socket.emit("setZero", 'z');
+        
+        // below is the implemented using rosbridge
+        // setZeroRequest.axis = 'z'
+        // rosStore.zeroSetter.callService(setZeroRequest, function(response) {
 
-        })
+        // })
     }
     // todo: set x, y, z goto value to previous value if new value is invalid
     // possiblely use focus event to store the old value
@@ -169,7 +191,7 @@ import { affixEmits } from 'element-plus';
     function zGoto(event: Event) {
         const et = event.target as HTMLInputElement
         if (et.value) { 
-            request.args = `"{cmd: G00 Z${et.value}}"`
+            request.args = `"{cmd: G00 Y${et.value}}"`
             console.log(request.args)
             rosStore.rosLauncher.callService(request, function(response) {
                 console.log(response.message)
