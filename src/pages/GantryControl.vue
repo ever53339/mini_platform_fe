@@ -224,81 +224,105 @@
     }
 
     function xPlus () {
-        request.args = `"{cmd: G00 X${parseFloat(pos.x) + parseFloat(jog.x)}}"`
-        console.log(request.args)
-        rosStore.rosLauncher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
+        // talk to openbuilds control socket io server directly
+        socket.emit('runCommand', `G00 X${parseFloat(pos.x) + parseFloat(jog.x)}`)
+        
+        // below is the implemented using rosbridge
+        // request.args = `"{cmd: G00 X${parseFloat(pos.x) + parseFloat(jog.x)}}"`
+        // console.log(request.args)
+        // rosStore.rosLauncher.callService(request, function(response) {
+        //     console.log(response.message)
+        //     if (response.is_launched){
                 
-            } else {
+        //     } else {
                 
-            }
-        })
+        //     }
+        // })
     }
 
     function yPlus () {
-        request.args = `"{cmd: G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}}"`
-        console.log(request.args)
-        rosStore.rosLauncher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
+        // talk to openbuilds control socket io server directly
+        socket.emit('runCommand', `G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}`)
+        
+        // below is the implemented using rosbridge
+        // request.args = `"{cmd: G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}}"`
+        // console.log(request.args)
+        // rosStore.rosLauncher.callService(request, function(response) {
+        //     console.log(response.message)
+        //     if (response.is_launched){
                 
-            } else {
+        //     } else {
                 
-            }
-        })
+        //     }
+        // })
     }
 
     function zPlus () {
-        request.args = `"{cmd: G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}}"`
-        console.log(request.args)
-        rosStore.rosLauncher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
+        // talk to openbuilds control socket io server directly
+        socket.emit('runCommand', `G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}`)
+        
+        // below is the implemented using rosbridge
+        // request.args = `"{cmd: G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}}"`
+        // console.log(request.args)
+        // rosStore.rosLauncher.callService(request, function(response) {
+        //     console.log(response.message)
+        //     if (response.is_launched){
                 
-            } else {
+        //     } else {
                 
-            }
-        })
+        //     }
+        // })
     }
 
     function xMinus () {
-        request.args = `"{cmd: G00 X${parseFloat(pos.x) - parseFloat(jog.x)}}"`
-        console.log(request.args)
-        rosStore.rosLauncher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
+        // talk to openbuilds control socket io server directly
+        socket.emit('runCommand', `G00 X${parseFloat(pos.x) - parseFloat(jog.x)}`)
+        
+        // below is the implemented using rosbridge
+        // request.args = `"{cmd: G00 X${parseFloat(pos.x) - parseFloat(jog.x)}}"`
+        // console.log(request.args)
+        // rosStore.rosLauncher.callService(request, function(response) {
+        //     console.log(response.message)
+        //     if (response.is_launched){
                 
-            } else {
+        //     } else {
                 
-            }
-        })
+        //     }
+        // })
     }
 
     function yMinus () {
-        request.args = `"{cmd: G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}}"`
-        console.log(request.args)
-        rosStore.rosLauncher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
+        // talk to openbuilds control socket io server directly
+        socket.emit('runCommand', `G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}`)
+        
+        // below is the implemented using rosbridge
+        // request.args = `"{cmd: G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}}"`
+        // console.log(request.args)
+        // rosStore.rosLauncher.callService(request, function(response) {
+        //     console.log(response.message)
+        //     if (response.is_launched){
                 
-            } else {
+        //     } else {
                 
-            }
-        })
+        //     }
+        // })
     }
 
     function zMinus () {
-        request.args = `"{cmd: G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}}"`
-        console.log(request.args)
-        rosStore.rosLauncher.callService(request, function(response) {
-            console.log(response.message)
-            if (response.is_launched){
+        // talk to openbuilds control socket io server directly
+        socket.emit('runCommand', `G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}`)
+        
+        // below is the implemented using rosbridge
+        // request.args = `"{cmd: G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}}"`
+        // console.log(request.args)
+        // rosStore.rosLauncher.callService(request, function(response) {
+        //     console.log(response.message)
+        //     if (response.is_launched){
                 
-            } else {
+        //     } else {
                 
-            }
-        })
+        //     }
+        // })
     }
 </script>
 
