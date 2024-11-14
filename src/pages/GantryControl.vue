@@ -310,7 +310,7 @@
 
     function zMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}`)
+        socket.emit('runCommand', `G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}}"`
