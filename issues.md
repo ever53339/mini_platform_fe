@@ -17,3 +17,6 @@ mainpage:
     buttons for start nodes/launch servers
     show progress on measurements, how many done, how many left
     general switch turns off when behavior tree is completed.
+
+mapping:
+    gap need to recognize 0.1
