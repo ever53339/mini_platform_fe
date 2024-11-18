@@ -17,10 +17,10 @@
                     <td><button class="jog-plus" @click="xPlus()">+</button></td>
                     <td><button class="jog-minus" @click="xMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.x">
-                        <option value=".1">0.1 mm</option>
-                        <option value="1">1 mm</option>
-                        <option value="10">10 mm</option>
-                        <option value="100">100 mm</option>
+                        <option :value=.1 :selected="true">0.1 mm</option>
+                        <option :value=1>1 mm</option>
+                        <option :value=10>10 mm</option>
+                        <option :value=100>100 mm</option>
                     </select></td>
                 </tr>
                 <tr>
@@ -30,10 +30,10 @@
                     <td><button class="jog-plus" @click="yPlus()">+</button></td>
                     <td><button class="jog-minus" @click="yMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.y">
-                        <option value=".1">0.1 mm</option>
-                        <option value="1">1 mm</option>
-                        <option value="10">10 mm</option>
-                        <option value="100">100 mm</option>
+                        <option :value=.1>0.1 mm</option>
+                        <option :value=1>1 mm</option>
+                        <option :value=10>10 mm</option>
+                        <option :value=100>100 mm</option>
                     </select></td>
                 </tr>
                 <tr>
@@ -43,10 +43,10 @@
                     <td><button class="jog-plus" @click="zPlus()">+</button></td>
                     <td><button class="jog-minus" @click="zMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.z">
-                        <option value=".1">0.1 mm</option>
-                        <option value="1">1 mm</option>
-                        <option value="10">10 mm</option>
-                        <option value="100">100 mm</option>
+                        <option :value=.1>0.1 mm</option>
+                        <option :value=1>1 mm</option>
+                        <option :value=10>10 mm</option>
+                        <option :value=100>100 mm</option>
                     </select></td>
                 </tr>
             </tbody>
@@ -73,15 +73,10 @@
         console.log('socket io disconnected from gantry')
     });
 
-    const goto = reactive({
-        x: '',
-        y: '',
-        z: ''
-    });
     const jog = reactive({
-        x: '',
-        y: '',
-        z: ''
+        x: .1,
+        y: .1,
+        z: .1
     });
 
     const pos = reactive({
@@ -105,10 +100,6 @@
         file_name: '/move_gantry custom_interfaces/action/MoveGantry',
         args: '"{cmd: G00 X10}"'
     };
-
-    const setZeroRequest = {
-        axis: ''
-    }
 
     rosStore.gantry_listener.subscribe(function(message : {work: string, x: number, y: number, z: number}) {
         if (!xInputFocused.value) {
@@ -225,7 +216,7 @@
 
     function xPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 X${pos.x + parseFloat(jog.x)}`)
+        socket.emit('runCommand', `G00 X${pos.x + jog.x}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 X${parseFloat(pos.x) + parseFloat(jog.x)}}"`
@@ -242,7 +233,7 @@
 
     function yPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Y${pos.y + parseFloat(jog.y)}`)
+        socket.emit('runCommand', `G00 Y${pos.y + jog.y}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}}"`
@@ -259,7 +250,7 @@
 
     function zPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${pos.z + parseFloat(jog.z)}`)
+        socket.emit('runCommand', `G00 Z${pos.z + jog.z}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}}"`
@@ -276,7 +267,7 @@
 
     function xMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 X${pos.x - parseFloat(jog.x)}`)
+        socket.emit('runCommand', `G00 X${pos.x - jog.x}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 X${parseFloat(pos.x) - parseFloat(jog.x)}}"`
@@ -293,7 +284,7 @@
 
     function yMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Y${pos.y - parseFloat(jog.y)}`)
+        socket.emit('runCommand', `G00 Y${pos.y - jog.y}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}}"`
@@ -310,7 +301,7 @@
 
     function zMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${pos.z - parseFloat(jog.z)}`)
+        socket.emit('runCommand', `G00 Z${pos.z - jog.z}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}}"`
