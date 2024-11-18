@@ -85,6 +85,8 @@
         z: 0.000
     })
 
+    console.log('a' == 'a')
+
     const xInput = ref(null)
     const yInput = ref(null)
     const zInput = ref(null)
@@ -101,6 +103,8 @@
         args: '"{cmd: G00 X10}"'
     };
 
+    const gantry_status = ref('')
+
     rosStore.gantry_listener.subscribe(function(message : {work: string, x: number, y: number, z: number}) {
         if (!xInputFocused.value) {
             pos.x = message.x
@@ -110,7 +114,8 @@
         }
         if (!zInputFocused.value) {
             pos.z = message.z
-        } 
+        }
+        gantry_status.value = message.work
     });
 
     function setZeroX() {
@@ -151,7 +156,10 @@
         const et = event.target as HTMLInputElement
 
         // talk to openbuilds control socket io server directly
-        if (et.value) {
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        }
+        else if (et.value) {
             socket.emit('runCommand', `G00 X${et.value}`)
         }
 
@@ -173,6 +181,9 @@
     function yGoto(event: Event) {
         const et = event.target as HTMLInputElement
         // talk to openbuilds control socket io server directly
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        }
         if (et.value) {
             socket.emit('runCommand', `G00 Y${et.value}`)
         }
@@ -195,6 +206,9 @@
     function zGoto(event: Event) {
         const et = event.target as HTMLInputElement
         // talk to openbuilds control socket io server directly
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        }
         if (et.value) {
             socket.emit('runCommand', `G00 Z${et.value}`)
         }
@@ -216,8 +230,11 @@
 
     function xPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 X${pos.x + jog.x}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 X${pos.x + jog.x}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 X${parseFloat(pos.x) + parseFloat(jog.x)}}"`
         // console.log(request.args)
@@ -233,8 +250,11 @@
 
     function yPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Y${pos.y + jog.y}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 Y${pos.y + jog.y}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}}"`
         // console.log(request.args)
@@ -250,8 +270,11 @@
 
     function zPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${pos.z + jog.z}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 Z${pos.z + jog.z}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}}"`
         // console.log(request.args)
@@ -267,8 +290,11 @@
 
     function xMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 X${pos.x - jog.x}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 X${pos.x - jog.x}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 X${parseFloat(pos.x) - parseFloat(jog.x)}}"`
         // console.log(request.args)
@@ -284,8 +310,11 @@
 
     function yMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Y${pos.y - jog.y}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 Y${pos.y - jog.y}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}}"`
         // console.log(request.args)
@@ -301,8 +330,11 @@
 
     function zMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${pos.z - jog.z}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 Z${pos.z - jog.z}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}}"`
         // console.log(request.args)
