@@ -13,7 +13,7 @@
                 <tr>
                     <td>X</td>
                     <td><button class="reset-button" @click="setZeroX()">set zero X</button></td>
-                    <td><input ref="xInput" type="text" v-model="pos.x" @change="xGoto"></input></td>
+                    <td><input ref="xInput" type="text" :value="pos.x.toFixed(2)" @change="xGoto"></input></td>
                     <td><button class="jog-plus" @click="xPlus()">+</button></td>
                     <td><button class="jog-minus" @click="xMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.x">
@@ -26,7 +26,7 @@
                 <tr>
                     <td>Y</td>
                     <td><button class="reset-button" @click="setZeroY()">set zero Y</button></td>
-                    <td><input ref="yInput" type="text" v-model="pos.y" @change="yGoto"></input></td>
+                    <td><input ref="yInput" type="text" :value="pos.y.toFixed(2)" @change="yGoto"></input></td>
                     <td><button class="jog-plus" @click="yPlus()">+</button></td>
                     <td><button class="jog-minus" @click="yMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.y">
@@ -39,7 +39,7 @@
                 <tr>
                     <td>Z</td>
                     <td><button class="reset-button" @click="setZeroZ()">set zero Z</button></td>
-                    <td><input ref="zInput" type="text" v-model="pos.z" @change="zGoto"></input></td>
+                    <td><input ref="zInput" type="text" :value="pos.z.toFixed(2)" @change="zGoto"></input></td>
                     <td><button class="jog-plus" @click="zPlus()">+</button></td>
                     <td><button class="jog-minus" @click="zMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.z">
@@ -85,9 +85,9 @@
     });
 
     const pos = reactive({
-        x: '',
-        y: '',
-        z: ''
+        x: 0.000,
+        y: 0.000,
+        z: 0.000
     })
 
     const xInput = ref(null)
@@ -110,15 +110,15 @@
         axis: ''
     }
 
-    rosStore.gantry_listener.subscribe(function(message : {work: string, x: Number, y: Number, z: Number}) {
+    rosStore.gantry_listener.subscribe(function(message : {work: string, x: number, y: number, z: number}) {
         if (!xInputFocused.value) {
-            pos.x = message.x.toString()
+            pos.x = message.x
         }
         if (!yInputFocused.value) {
-            pos.y = message.y.toString()
+            pos.y = message.y
         }
         if (!zInputFocused.value) {
-            pos.z = message.z.toString()
+            pos.z = message.z
         } 
     });
 
@@ -225,7 +225,7 @@
 
     function xPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 X${parseFloat(pos.x) + parseFloat(jog.x)}`)
+        socket.emit('runCommand', `G00 X${pos.x + parseFloat(jog.x)}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 X${parseFloat(pos.x) + parseFloat(jog.x)}}"`
@@ -242,7 +242,7 @@
 
     function yPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}`)
+        socket.emit('runCommand', `G00 Y${pos.y + parseFloat(jog.y)}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}}"`
@@ -259,7 +259,7 @@
 
     function zPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}`)
+        socket.emit('runCommand', `G00 Z${pos.z + parseFloat(jog.z)}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}}"`
@@ -276,7 +276,7 @@
 
     function xMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 X${parseFloat(pos.x) - parseFloat(jog.x)}`)
+        socket.emit('runCommand', `G00 X${pos.x - parseFloat(jog.x)}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 X${parseFloat(pos.x) - parseFloat(jog.x)}}"`
@@ -293,7 +293,7 @@
 
     function yMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}`)
+        socket.emit('runCommand', `G00 Y${pos.y - parseFloat(jog.y)}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}}"`
@@ -310,7 +310,7 @@
 
     function zMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}`)
+        socket.emit('runCommand', `G00 Z${pos.z - parseFloat(jog.z)}`)
         
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}}"`
@@ -356,6 +356,7 @@
     .gantry-table input {
         height: 35px;
         box-sizing: border-box;
+        text-align: center;
     }
 
     .jog-plus {
