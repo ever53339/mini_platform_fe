@@ -13,7 +13,7 @@
                 <tr>
                     <td>X</td>
                     <td><button class="reset-button" @click="setZeroX()">set zero X</button></td>
-                    <td><input ref="xInput" type="text" :value="pos.x.toFixed(2)" @change="xGoto"></input></td>
+                    <td><input ref="xInput" type="text" :value="pos.x.toFixed(2)" @change="xGoto" @keydown.enter="loseFocus"></input></td>
                     <td><button class="jog-plus" @click="xPlus()">+</button></td>
                     <td><button class="jog-minus" @click="xMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.x">
@@ -26,7 +26,7 @@
                 <tr>
                     <td>Y</td>
                     <td><button class="reset-button" @click="setZeroY()">set zero Y</button></td>
-                    <td><input ref="yInput" type="text" :value="pos.y.toFixed(2)" @change="yGoto"></input></td>
+                    <td><input ref="yInput" type="text" :value="pos.y.toFixed(2)" @change="yGoto" @keydown.enter="loseFocus"></input></td>
                     <td><button class="jog-plus" @click="yPlus()">+</button></td>
                     <td><button class="jog-minus" @click="yMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.y">
@@ -39,7 +39,7 @@
                 <tr>
                     <td>Z</td>
                     <td><button class="reset-button" @click="setZeroZ()">set zero Z</button></td>
-                    <td><input ref="zInput" type="text" :value="pos.z.toFixed(2)" @change="zGoto"></input></td>
+                    <td><input ref="zInput" type="text" :value="pos.z.toFixed(2)" @change="zGoto" @keydown.enter="loseFocus"></input></td>
                     <td><button class="jog-plus" @click="zPlus()">+</button></td>
                     <td><button class="jog-minus" @click="zMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.z">
@@ -51,7 +51,9 @@
                 </tr>
             </tbody>
         </table>
+        <button class="abort-button" @click="abortGantry">Abort</button>
     </div>
+
     <!-- <button @click="myfunction()"></button> -->
 </template>
 
@@ -346,6 +348,17 @@
                 
         //     }
         // })
+    }
+
+    function abortGantry () {
+        // socket.emit()
+        // todo: figure out the abort channel name from openbuilds control
+        // abort button layout
+    }
+
+    function loseFocus (event: Event) {
+        const et = event.target as HTMLInputElement
+        et.blur()
     }
 </script>
 
