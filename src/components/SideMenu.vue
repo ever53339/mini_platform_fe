@@ -32,7 +32,12 @@
           <RouterLink class="class1-menu router-link" 
           replace  to="/gantryControl">Gantry Control</RouterLink>
         </el-menu-item>
-        <el-menu-item index="3" disabled>
+        <el-menu-item index="3">
+          <!-- <el-icon><icon-menu /></el-icon> -->
+          <RouterLink class="class1-menu router-link" 
+          replace  to="/LIBSControl">LIBS Control</RouterLink>
+        </el-menu-item>
+        <el-menu-item index="4" disabled>
           <!-- <el-icon><document /></el-icon> -->
           <span class="class1-menu">Analytical Device Control</span>
         </el-menu-item>
