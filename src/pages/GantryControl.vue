@@ -64,6 +64,7 @@
     import { reactive, ref, watch } from 'vue';
     import { useFocus } from '@vueuse/core';
     import { io } from "socket.io-client";
+import type ROSLIB from 'roslib';
 
     const socket = io('http://localhost:3000', {transports: ['websocket']})
 
@@ -107,7 +108,7 @@
 
     const gantry_status = ref('')
 
-    rosStore.gantry_listener.subscribe(function(message : {work: string, x: number, y: number, z: number}) {
+    rosStore.gantry_listener.subscribe(function(message: any) {
         if (!xInputFocused.value) {
             pos.x = message.x
         }
@@ -351,9 +352,7 @@
     }
 
     function abortGantry () {
-        // socket.emit()
-        // todo: figure out the abort channel name from openbuilds control
-        // abort button layout
+        socket.emit('stop', true)
     }
 
     function loseFocus (event: Event) {
