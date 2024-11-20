@@ -7,12 +7,6 @@
             <SideMenu></SideMenu>
         </div>
         <div class="up-down-flex">
-            <!-- <span>{{ configStore.mappingConfig.x_gap }}</span>
-            <span>{{ configStore.mappingConfig.y_gap }}</span>
-            <span>{{ configStore.mappingConfig.x_points }}</span>
-            <span>{{ configStore.mappingConfig.y_points }}</span>
-            <span>{{ configStore.multipleSampleConfig.num_samples }}</span>
-            <span>{{ configStore.multipleSampleConfig.sample_locations }}</span> -->
             <div class="content-container">
                 <RouterView></RouterView>
             </div>
@@ -80,7 +74,7 @@
                 request.cmd = 'run'
                 request.package = 'bt'
                 request.file_name = 'single_sample_mapping'
-                request.args = '--ros-args -p x_gap:=' + parseFloat(configStore.mappingConfig.x_gap) + '.0' + ' -p y_gap:=' + parseFloat(configStore.mappingConfig.y_gap) + '.0' + ' -p x_points:=' + parseInt(configStore.mappingConfig.x_points) + ' -p y_points:=' + parseInt(configStore.mappingConfig.y_points)
+                request.args = '--ros-args -p x_gap:=' + parseFloat(configStore.mappingConfig.x_gap).toFixed(1) + ' -p y_gap:=' + parseFloat(configStore.mappingConfig.y_gap).toFixed(1) + ' -p x_points:=' + parseInt(configStore.mappingConfig.x_points) + ' -p y_points:=' + parseInt(configStore.mappingConfig.y_points)
             } else {
                 request.cmd = 'run'
                 request.package = 'bt'
