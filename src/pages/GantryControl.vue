@@ -352,7 +352,7 @@ import type ROSLIB from 'roslib';
     }
 
     function abortGantry () {
-        socket.emit('stop', true)
+        socket.emit('stop', {'stop': true, 'jog': false, 'abort': false})
     }
 
     function loseFocus (event: Event) {
