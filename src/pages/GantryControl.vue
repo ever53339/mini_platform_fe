@@ -111,7 +111,7 @@
 
     const gantry_status = ref('')
 
-    rosStore.gantry_listener.subscribe(function(message: any) {
+    rosStore.gantryListener.subscribe(function(message: any) {
         if (!xInputFocused.value) {
             pos.x = message.x
         }
@@ -163,7 +163,7 @@
 
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         }
         else if (et.value) {
             socket.emit('runCommand', `G00 X${et.value}`)
@@ -188,7 +188,7 @@
         const et = event.target as HTMLInputElement
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         }
         if (et.value) {
             socket.emit('runCommand', `G00 Y${et.value}`)
@@ -213,7 +213,7 @@
         const et = event.target as HTMLInputElement
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         }
         if (et.value) {
             socket.emit('runCommand', `G00 Z${et.value}`)
@@ -237,7 +237,7 @@
     function xPlus () {
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         } else {
             socket.emit('runCommand', `G00 X${pos.x + jog.x}`)
         }
@@ -257,7 +257,7 @@
     function yPlus () {
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         } else {
             socket.emit('runCommand', `G00 Y${pos.y + jog.y}`)
         }
@@ -277,7 +277,7 @@
     function zPlus () {
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         } else {
             socket.emit('runCommand', `G00 Z${pos.z + jog.z}`)
         }
@@ -297,7 +297,7 @@
     function xMinus () {
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         } else {
             socket.emit('runCommand', `G00 X${pos.x - jog.x}`)
         }
@@ -317,7 +317,7 @@
     function yMinus () {
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         } else {
             socket.emit('runCommand', `G00 Y${pos.y - jog.y}`)
         }
@@ -337,7 +337,7 @@
     function zMinus () {
         // talk to openbuilds control socket io server directly
         if (gantry_status.value != 'Idle') {
-            alert('Gantry is still running')
+            alert('Gantry is not ready.')
         } else {
             socket.emit('runCommand', `G00 Z${pos.z - jog.z}`)
         }
