@@ -15,7 +15,7 @@
                     <el-switch class="switch"
                         style="--el-switch-on-color: #13ce66"
                         size="large"
-                        v-model="generalSwitch" />&emsp;Robot status: Running
+                        v-model="generalSwitch" />&emsp;Gantry Status: {{ gantryStatus }}
                 </span>
             </div>
         </div>
@@ -126,6 +126,12 @@
         }
     })
 
+    // gantry status
+    const gantryStatus = ref('')
+
+    rosStore.gantryListener.subscribe(function(message: any) {
+        gantryStatus.value = message.work
+    });
 
 </script>
 
