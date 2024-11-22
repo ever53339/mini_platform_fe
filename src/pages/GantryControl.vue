@@ -13,45 +13,53 @@
                 <tr>
                     <td>X</td>
                     <td><button class="reset-button" @click="setZeroX()">set zero X</button></td>
-                    <td><input ref="xInput" type="text" v-model="pos.x" @change="xGoto"></input></td>
+                    <td><input ref="xInput" type="text" :value="pos.x.toFixed(2)" @change="xGoto" @keydown.enter="loseFocus"></input></td>
                     <td><button class="jog-plus" @click="xPlus()">+</button></td>
                     <td><button class="jog-minus" @click="xMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.x">
-                        <option value=".1">0.1 mm</option>
-                        <option value="1">1 mm</option>
-                        <option value="10">10 mm</option>
-                        <option value="100">100 mm</option>
+                        <option :value=.1 :selected="true">0.1 mm</option>
+                        <option :value=1>1 mm</option>
+                        <option :value=10>10 mm</option>
+                        <option :value=100>100 mm</option>
                     </select></td>
                 </tr>
                 <tr>
                     <td>Y</td>
                     <td><button class="reset-button" @click="setZeroY()">set zero Y</button></td>
-                    <td><input ref="yInput" type="text" v-model="pos.y" @change="yGoto"></input></td>
+                    <td><input ref="yInput" type="text" :value="pos.y.toFixed(2)" @change="yGoto" @keydown.enter="loseFocus"></input></td>
                     <td><button class="jog-plus" @click="yPlus()">+</button></td>
                     <td><button class="jog-minus" @click="yMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.y">
-                        <option value=".1">0.1 mm</option>
-                        <option value="1">1 mm</option>
-                        <option value="10">10 mm</option>
-                        <option value="100">100 mm</option>
+                        <option :value=.1>0.1 mm</option>
+                        <option :value=1>1 mm</option>
+                        <option :value=10>10 mm</option>
+                        <option :value=100>100 mm</option>
                     </select></td>
                 </tr>
                 <tr>
                     <td>Z</td>
                     <td><button class="reset-button" @click="setZeroZ()">set zero Z</button></td>
-                    <td><input ref="zInput" type="text" v-model="pos.z" @change="zGoto"></input></td>
+                    <td><input ref="zInput" type="text" :value="pos.z.toFixed(2)" @change="zGoto" @keydown.enter="loseFocus"></input></td>
                     <td><button class="jog-plus" @click="zPlus()">+</button></td>
                     <td><button class="jog-minus" @click="zMinus()">-</button></td>
                     <td><select class="jog-select" v-model="jog.z">
-                        <option value=".1">0.1 mm</option>
-                        <option value="1">1 mm</option>
-                        <option value="10">10 mm</option>
-                        <option value="100">100 mm</option>
+                        <option :value=.1>0.1 mm</option>
+                        <option :value=1>1 mm</option>
+                        <option :value=10>10 mm</option>
+                        <option :value=100>100 mm</option>
                     </select></td>
                 </tr>
             </tbody>
         </table>
+        <button class="abort-button" @click="abortGantry">Abort</button>
+        <button class="clear-button" @click="clearAlarm">Clear Alarm</button>
+        <dialog ref="dialogRef">
+            <span>{{ dialogContent }}</span>
+            <button autofocus @click="clearAlarm">Clear Alarm</button>
+            <button @click="closeDialog">Cancel</button>
+        </dialog>
     </div>
+
     <!-- <button @click="myfunction()"></button> -->
 </template>
 
@@ -73,21 +81,16 @@
         console.log('socket io disconnected from gantry')
     });
 
-    const goto = reactive({
-        x: '',
-        y: '',
-        z: ''
-    });
     const jog = reactive({
-        x: '',
-        y: '',
-        z: ''
+        x: .1,
+        y: .1,
+        z: .1
     });
 
     const pos = reactive({
-        x: '',
-        y: '',
-        z: ''
+        x: 0.000,
+        y: 0.000,
+        z: 0.000
     })
 
     const xInput = ref(null)
@@ -106,20 +109,19 @@
         args: '"{cmd: G00 X10}"'
     };
 
-    const setZeroRequest = {
-        axis: ''
-    }
+    const gantry_status = ref('')
 
-    rosStore.gantry_listener.subscribe(function(message : {work: string, x: Number, y: Number, z: Number}) {
+    rosStore.gantry_listener.subscribe(function(message: any) {
         if (!xInputFocused.value) {
-            pos.x = message.x.toString()
+            pos.x = message.x
         }
         if (!yInputFocused.value) {
-            pos.y = message.y.toString()
+            pos.y = message.y
         }
         if (!zInputFocused.value) {
-            pos.z = message.z.toString()
-        } 
+            pos.z = message.z
+        }
+        gantry_status.value = message.work
     });
 
     function setZeroX() {
@@ -160,7 +162,10 @@
         const et = event.target as HTMLInputElement
 
         // talk to openbuilds control socket io server directly
-        if (et.value) {
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        }
+        else if (et.value) {
             socket.emit('runCommand', `G00 X${et.value}`)
         }
 
@@ -182,6 +187,9 @@
     function yGoto(event: Event) {
         const et = event.target as HTMLInputElement
         // talk to openbuilds control socket io server directly
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        }
         if (et.value) {
             socket.emit('runCommand', `G00 Y${et.value}`)
         }
@@ -204,6 +212,9 @@
     function zGoto(event: Event) {
         const et = event.target as HTMLInputElement
         // talk to openbuilds control socket io server directly
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        }
         if (et.value) {
             socket.emit('runCommand', `G00 Z${et.value}`)
         }
@@ -225,8 +236,11 @@
 
     function xPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 X${parseFloat(pos.x) + parseFloat(jog.x)}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 X${pos.x + jog.x}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 X${parseFloat(pos.x) + parseFloat(jog.x)}}"`
         // console.log(request.args)
@@ -242,8 +256,11 @@
 
     function yPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 Y${pos.y + jog.y}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Y${parseFloat(pos.y) + parseFloat(jog.y)}}"`
         // console.log(request.args)
@@ -259,8 +276,11 @@
 
     function zPlus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 Z${pos.z + jog.z}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) + parseFloat(jog.z)}}"`
         // console.log(request.args)
@@ -276,8 +296,11 @@
 
     function xMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 X${parseFloat(pos.x) - parseFloat(jog.x)}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 X${pos.x - jog.x}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 X${parseFloat(pos.x) - parseFloat(jog.x)}}"`
         // console.log(request.args)
@@ -293,8 +316,11 @@
 
     function yMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 Y${pos.y - jog.y}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Y${parseFloat(pos.y) - parseFloat(jog.y)}}"`
         // console.log(request.args)
@@ -310,8 +336,11 @@
 
     function zMinus () {
         // talk to openbuilds control socket io server directly
-        socket.emit('runCommand', `G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}`)
-        
+        if (gantry_status.value != 'Idle') {
+            alert('Gantry is still running')
+        } else {
+            socket.emit('runCommand', `G00 Z${pos.z - jog.z}`)
+        }
         // below is the implemented using rosbridge
         // request.args = `"{cmd: G00 Z${parseFloat(pos.z) - parseFloat(jog.z)}}"`
         // console.log(request.args)
@@ -324,6 +353,36 @@
         //     }
         // })
     }
+
+    function loseFocus (event: Event) {
+        const et = event.target as HTMLInputElement
+        et.blur()
+    }
+
+    // abort gantry and clear alarm
+    const dialogRef = ref<HTMLDialogElement | null>(null)
+        const dialogContent = ref('')
+
+    socket.on('toastErrorAlarm', function(data) {
+        dialogRef.value?.showModal()
+        dialogContent.value = data
+        
+    })
+
+    function closeDialog () {
+        dialogRef.value?.close()
+    }
+
+    function abortGantry () {
+        socket.emit('stop', {'stop': true, 'jog': false, 'abort': false})
+    }
+
+    function clearAlarm () {
+        socket.emit('clearAlarm', 2)
+        dialogRef.value?.close()
+    }
+
+    
 </script>
 
 <style scoped>
@@ -356,6 +415,7 @@
     .gantry-table input {
         height: 35px;
         box-sizing: border-box;
+        text-align: center;
     }
 
     .jog-plus {
