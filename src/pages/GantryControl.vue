@@ -52,6 +52,12 @@
             </tbody>
         </table>
         <button class="abort-button" @click="abortGantry">Abort</button>
+        <button class="clear-button" @click="clearAlarm">Clear Alarm</button>
+        <dialog ref="dialogRef">
+            <span>{{ dialogContent }}</span>
+            <button autofocus @click="clearAlarm">Clear Alarm</button>
+            <button @click="closeDialog">Cancel</button>
+        </dialog>
     </div>
 
     <!-- <button @click="myfunction()"></button> -->
@@ -64,7 +70,6 @@
     import { reactive, ref, watch } from 'vue';
     import { useFocus } from '@vueuse/core';
     import { io } from "socket.io-client";
-import type ROSLIB from 'roslib';
 
     const socket = io('http://localhost:3000', {transports: ['websocket']})
 
@@ -87,8 +92,6 @@ import type ROSLIB from 'roslib';
         y: 0.000,
         z: 0.000
     })
-
-    console.log('a' == 'a')
 
     const xInput = ref(null)
     const yInput = ref(null)
@@ -351,14 +354,35 @@ import type ROSLIB from 'roslib';
         // })
     }
 
-    function abortGantry () {
-        socket.emit('stop', {'stop': true, 'jog': false, 'abort': false})
-    }
-
     function loseFocus (event: Event) {
         const et = event.target as HTMLInputElement
         et.blur()
     }
+
+    // abort gantry and clear alarm
+    const dialogRef = ref<HTMLDialogElement | null>(null)
+        const dialogContent = ref('')
+
+    socket.on('toastErrorAlarm', function(data) {
+        dialogRef.value?.showModal()
+        dialogContent.value = data
+        
+    })
+
+    function closeDialog () {
+        dialogRef.value?.close()
+    }
+
+    function abortGantry () {
+        socket.emit('stop', {'stop': true, 'jog': false, 'abort': false})
+    }
+
+    function clearAlarm () {
+        socket.emit('clearAlarm', 2)
+        dialogRef.value?.close()
+    }
+
+    
 </script>
 
 <style scoped>
