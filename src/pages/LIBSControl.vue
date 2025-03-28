@@ -100,6 +100,7 @@
     function analyze() {
         socket.emit("analyze", 'data', (val: string) => {
             balanceResponse.value = val
+            console.log(val)
         });
     }
 
