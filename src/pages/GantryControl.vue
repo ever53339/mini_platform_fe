@@ -78,7 +78,7 @@
     socket.on("connect", () => {
         console.log('socket io connected to gantry')
     });
-
+    
     socket.on("disconnect", () => {
         console.log('socket io disconnected from gantry')
     });
@@ -430,13 +430,5 @@
         height: 35px;
         text-align: center;
         font-size: 20px;
-    }
-    .e-buttons {
-        height: 100px;
-        line-height: 100px;
-        border: 50px;
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
     }
 </style>
