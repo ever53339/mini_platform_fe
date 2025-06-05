@@ -51,8 +51,10 @@
                 </tr>
             </tbody>
         </table>
-        <button class="abort-button" @click="abortGantry">Abort</button>
-        <button class="clear-button" @click="clearAlarm">Clear Alarm</button>
+        <div class=e-buttons>
+            <button class="abort-button" @click="abortGantry">Abort</button>
+            <button class="clear-button" @click="clearAlarm">Clear Alarm</button>
+        </div>
         <dialog ref="dialogRef">
             <span>{{ dialogContent }}</span>
             <button autofocus @click="clearAlarm">Clear Alarm</button>
@@ -408,7 +410,7 @@
         height: 30px;
         font-size: 20px;
     }
-    .gantry-table button {
+    button {
         font-size: 20px;
         height: 35px;
     }
@@ -428,5 +430,13 @@
         height: 35px;
         text-align: center;
         font-size: 20px;
+    }
+    .e-buttons {
+        height: 100px;
+        line-height: 100px;
+        border: 50px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
     }
 </style>
