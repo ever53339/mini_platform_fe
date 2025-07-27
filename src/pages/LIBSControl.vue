@@ -5,6 +5,10 @@
             <div>Device Response</div>
             <input class="custom-input" placeholder="Response Will Show Here" type="text"v-model="balanceResponse" disabled="true"></input>
         </div>
+        <div class="export-path">
+            <div>Export Path</div>
+            <input class="custom-input" placeholder="Enter export path here" type="text" v-model="exportPath" @change="updateExportPath" @keydown.enter="loseFocus"></input>
+        </div>
         <div class="operation">
                        
             <div class="div1"><button class="original-button" @click="measure">Measure</button> </div>
@@ -56,6 +60,7 @@
     const ip = ref('')
     const connectOp = ref('Connect')
     const balanceResponse = ref('')
+    const exportPath = ref('')
     // balanceResponse.value = 'something'  
 
     const isConnected = ref(false)
@@ -79,11 +84,17 @@
             socket.on('status', (data: any) => {
                 balanceResponse.value = data
             });
+            socket.on('export_path', (data: any) => {
+                // Only update if the export path input is not focused
+                const exportPathInput = document.querySelector('.export-path input') as HTMLInputElement;
+                if (exportPathInput && document.activeElement !== exportPathInput) {
+                    exportPath.value = data;
+                }
+            });
             socket.connect();
         }
         
     }
-    
 
     function measure() {
         socket.emit("measure", 'data', (val: string) => {
@@ -111,56 +122,24 @@
         });
     }
 
-    function weigh() {
-        socket.emit("weigh", 'y', (val: string) => {
-            balanceResponse.value = val
-        });
-    }
-
-    function checkDoors() {
-        socket.emit("check_doors", 'y', (val: string) => {
-            balanceResponse.value = val
-        });
-    }
-
     
-    function draftDoors(draftedDoors: number) {
-        socket.emit("draft_doors", draftedDoors, (val: string) => {
+
+    function updateExportPath() {
+    
+        console.log(exportPath.value)
+        socket.emit("change_export_path", exportPath.value, (val: string) => {
             balanceResponse.value = val
+            console.log(val)
         });
+        
     }
 
-    function closeAll() {
-        draftDoors(0)
+    function loseFocus (event: Event) {
+        const et = event.target as HTMLInputElement
+        et.blur()
     }
+    
 
-    function openAll() {
-        draftDoors(5)
-    }
-
-    function openLeft() {
-        draftDoors(2)
-    }
-
-    function openRight() {
-        draftDoors(1)
-    }
-
-    function openTop() {
-        draftDoors(3)
-    }
-
-    function openLR() {
-        draftDoors(4)
-    }
-
-    function openLT() {
-        draftDoors(7)
-    }
-
-    function openRT() {
-        draftDoors(6)
-    }
     
 </script>
 
@@ -202,6 +181,29 @@
         margin-bottom: 0;
     }
     .response input {
+        height: 60px;
+    }
+
+    .export-path {
+        width: 700px;
+        height: 100px;
+        margin-bottom: 30px;
+        background-color: #f3ecb8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        vertical-align: top;
+        border-radius: 10px;
+        padding: 2px 2px;
+    }
+    .export-path div {
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        align-items: center;
+        margin-bottom: 0;
+    }
+    .export-path input {
         height: 60px;
     }
 
