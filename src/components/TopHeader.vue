@@ -2,7 +2,7 @@
     <div class='header'>
         <div class="header-container">
             <h1 class="header-text">
-                <img src="/lml.png" alt="Living Minerals Lab logo">Intellegent Mineral Sample Characterization Platform
+                <img src="/lml.png" alt="Living Minerals Lab logo">Robotic Mineral & Material Sample Characterization Platform
             </h1>
         </div>
     </div>
@@ -19,7 +19,7 @@
     }
 
     .header-container {
-        width: 1200px;
+        width: 1400px;
         background-color: skyblue;
         margin: 0 auto;
         text-align: center;

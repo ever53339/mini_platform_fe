@@ -15,7 +15,7 @@
                     <el-switch class="switch"
                         style="--el-switch-on-color: #13ce66"
                         size="large"
-                        v-model="generalSwitch" />&emsp;Gantry Status: {{ gantryStatus }}
+                        v-model="generalSwitch" />&emsp;Status: {{ gantryStatus }}
                 </span>
             </div>
         </div>

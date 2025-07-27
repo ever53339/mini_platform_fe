@@ -2,8 +2,8 @@
     <div class="container">
         
         <div class="response">
-            <div>Balance Response</div>
-            <input class="custom-input" placeholder="Balance Response Will Show Here" type="text"v-model="balanceResponse" disabled="true"></input>
+            <div>Device Response</div>
+            <input class="custom-input" placeholder="Response Will Show Here" type="text"v-model="balanceResponse" disabled="true"></input>
         </div>
         <div class="operation">
                        
@@ -11,8 +11,8 @@
             <div class="div2"><button class="original-button" @click="export_spectrum">Export</button> </div>
             <div class="div3"><button class="original-button" @click="analyze">Analyze</button> </div>
             <div class="div4"><button class="original-button" @click="find_buttons">Find Buttons</button> </div>
-            <div class="div5"><button class="original-button" @click="checkDoors">TBD</button> </div>
-            <div class="div6">
+            <!-- <div class="div5"><button class="original-button" @click="checkDoors">TBD</button> </div> -->
+            <!-- <div class="div6">
                 <div class="div61"><button class="rec-button" @click="closeAll"></button></div>
                 <div class="div62"><button class="rec-button" @click="openAll"></button></div>
                 <div class="div63"><button class="rec-button" @click="openLeft"></button></div>
@@ -21,7 +21,7 @@
                 <div class="div66"><button class="rec-button" @click="openLR"></button></div>
                 <div class="div67"><button class="rec-button" @click="openLT"></button></div>
                 <div class="div68"><button class="rec-button" @click="openRT"></button></div>
-            </div>
+            </div> -->
        
         </div>
         <div class="communication">
